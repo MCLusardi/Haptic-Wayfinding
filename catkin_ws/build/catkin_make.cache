@@ -1,0 +1,2 @@
+realsense_gazebo_plugin:stretch_ros/hello_helpers:stretch_ros/stretch_calibration:stretch_ros/stretch_core:stretch_ros/stretch_dashboard:stretch_ros/stretch_deep_perception:stretch_ros/stretch_demos:stretch_ros/stretch_description:stretch_ros/stretch_funmap:stretch_ros/stretch_gazebo:stretch_ros/stretch_navigation:stretch_ros/stretch_octomap:stretch_ros/stretch_rtabmap
+-DCATKIN_DEVEL_PREFIX=/home/wayfinders/Haptic-Wayfinding/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/wayfinders/Haptic-Wayfinding/catkin_ws/install -G Unix Makefiles

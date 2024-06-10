@@ -1,0 +1,2 @@
+set(stretch_demos_MESSAGE_FILES "msg/ArucoHeadScanAction.msg;msg/ArucoHeadScanActionGoal.msg;msg/ArucoHeadScanActionResult.msg;msg/ArucoHeadScanActionFeedback.msg;msg/ArucoHeadScanGoal.msg;msg/ArucoHeadScanResult.msg;msg/ArucoHeadScanFeedback.msg;msg/VisualServoAction.msg;msg/VisualServoActionGoal.msg;msg/VisualServoActionResult.msg;msg/VisualServoActionFeedback.msg;msg/VisualServoGoal.msg;msg/VisualServoResult.msg;msg/VisualServoFeedback.msg")
+set(stretch_demos_SERVICE_FILES "")

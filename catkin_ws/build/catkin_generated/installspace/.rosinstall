@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/wayfinders/Haptic-Wayfinding/catkin_ws/install/setup.sh
