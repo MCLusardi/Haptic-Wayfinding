@@ -1,0 +1,15 @@
+[36mInstall the project...[0m
+-- Install configuration: ""
+-- Installing: /home/hcal-group/catkin_ws/install/_setup_util.py
+-- Installing: /home/hcal-group/catkin_ws/install/env.sh
+-- Installing: /home/hcal-group/catkin_ws/install/setup.bash
+-- Installing: /home/hcal-group/catkin_ws/install/local_setup.bash
+-- Installing: /home/hcal-group/catkin_ws/install/setup.sh
+-- Installing: /home/hcal-group/catkin_ws/install/local_setup.sh
+-- Installing: /home/hcal-group/catkin_ws/install/setup.zsh
+-- Installing: /home/hcal-group/catkin_ws/install/local_setup.zsh
+-- Installing: /home/hcal-group/catkin_ws/install/.rosinstall
+-- Installing: /home/hcal-group/catkin_ws/install/lib/pkgconfig/stretch_calibration.pc
+-- Installing: /home/hcal-group/catkin_ws/install/share/stretch_calibration/cmake/stretch_calibrationConfig.cmake
+-- Installing: /home/hcal-group/catkin_ws/install/share/stretch_calibration/cmake/stretch_calibrationConfig-version.cmake
+-- Installing: /home/hcal-group/catkin_ws/install/share/stretch_calibration/package.xml

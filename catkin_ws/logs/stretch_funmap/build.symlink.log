@@ -1,0 +1,4 @@
+Symlinking /home/hcal-group/catkin_ws/devel/lib/python3/dist-packages/stretch_funmap/__init__.py
+Symlinking /home/hcal-group/catkin_ws/devel/lib/pkgconfig/stretch_funmap.pc
+Symlinking /home/hcal-group/catkin_ws/devel/share/stretch_funmap/cmake/stretch_funmapConfig-version.cmake
+Symlinking /home/hcal-group/catkin_ws/devel/share/stretch_funmap/cmake/stretch_funmapConfig.cmake

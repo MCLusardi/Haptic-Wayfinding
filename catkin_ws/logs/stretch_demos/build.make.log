@@ -1,0 +1,25 @@
+[  0%] Built target actionlib_msgs_generate_messages_eus
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoActionFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoActionResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoAction
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanActionFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanAction
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanActionResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoGoal
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanGoal
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoActionGoal
+[  0%] Built target actionlib_msgs_generate_messages_py
+[  0%] Built target actionlib_msgs_generate_messages_cpp
+[  0%] Built target actionlib_msgs_generate_messages_nodejs
+[  0%] Built target actionlib_msgs_generate_messages_lisp
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanActionGoal
+[ 20%] Built target stretch_demos_generate_messages_eus
+[ 41%] Built target stretch_demos_generate_messages_py
+[ 61%] Built target stretch_demos_generate_messages_cpp
+[ 80%] Built target stretch_demos_generate_messages_nodejs
+[100%] Built target stretch_demos_generate_messages_lisp
+[100%] Built target stretch_demos_generate_messages

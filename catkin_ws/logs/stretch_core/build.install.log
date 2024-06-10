@@ -1,0 +1,15 @@
+[36mInstall the project...[0m
+-- Install configuration: ""
+-- Installing: /home/hcal-group/catkin_ws/install/_setup_util.py
+-- Installing: /home/hcal-group/catkin_ws/install/env.sh
+-- Installing: /home/hcal-group/catkin_ws/install/setup.bash
+-- Installing: /home/hcal-group/catkin_ws/install/local_setup.bash
+-- Installing: /home/hcal-group/catkin_ws/install/setup.sh
+-- Installing: /home/hcal-group/catkin_ws/install/local_setup.sh
+-- Installing: /home/hcal-group/catkin_ws/install/setup.zsh
+-- Installing: /home/hcal-group/catkin_ws/install/local_setup.zsh
+-- Installing: /home/hcal-group/catkin_ws/install/.rosinstall
+-- Up-to-date: /home/hcal-group/catkin_ws/install/lib/pkgconfig/stretch_core.pc
+-- Up-to-date: /home/hcal-group/catkin_ws/install/share/stretch_core/cmake/stretch_coreConfig.cmake
+-- Up-to-date: /home/hcal-group/catkin_ws/install/share/stretch_core/cmake/stretch_coreConfig-version.cmake
+-- Up-to-date: /home/hcal-group/catkin_ws/install/share/stretch_core/package.xml

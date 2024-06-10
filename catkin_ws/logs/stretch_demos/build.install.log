@@ -1,0 +1,54 @@
+[  0%] Built target actionlib_msgs_generate_messages_eus
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoActionFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoActionResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoAction
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanActionFeedback
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanAction
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanActionResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanResult
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoGoal
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanGoal
+[  0%] Built target _stretch_demos_generate_messages_check_deps_VisualServoActionGoal
+[  0%] Built target _stretch_demos_generate_messages_check_deps_ArucoHeadScanActionGoal
+[ 20%] Built target stretch_demos_generate_messages_eus
+[ 20%] Built target actionlib_msgs_generate_messages_py
+[ 41%] Built target stretch_demos_generate_messages_py
+[ 41%] Built target actionlib_msgs_generate_messages_cpp
+[ 61%] Built target stretch_demos_generate_messages_cpp
+[ 61%] Built target actionlib_msgs_generate_messages_nodejs
+[ 80%] Built target stretch_demos_generate_messages_nodejs
+[ 80%] Built target actionlib_msgs_generate_messages_lisp
+[100%] Built target stretch_demos_generate_messages_lisp
+[100%] Built target stretch_demos_generate_messages
+[36mInstall the project...[0m
+-- Install configuration: ""
+-- Up-to-date: /home/hcal-group/catkin_ws/install/_setup_util.py
+-- Up-to-date: /home/hcal-group/catkin_ws/install/env.sh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/setup.bash
+-- Up-to-date: /home/hcal-group/catkin_ws/install/local_setup.bash
+-- Up-to-date: /home/hcal-group/catkin_ws/install/setup.sh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/local_setup.sh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/setup.zsh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/local_setup.zsh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/.rosinstall
++ cd /home/hcal-group/catkin_ws/src/stretch_demos
++ mkdir -p /home/hcal-group/catkin_ws/install/lib/python3/dist-packages
++ /usr/bin/env PYTHONPATH=/home/hcal-group/catkin_ws/install/lib/python3/dist-packages:/home/hcal-group/catkin_ws/build/stretch_demos/lib/python3/dist-packages:/home/hcal-group/catkin_ws/install/lib/python3/dist-packages:/home/hcal-group/catkin_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages CATKIN_BINARY_DIR=/home/hcal-group/catkin_ws/build/stretch_demos /usr/bin/python3 /home/hcal-group/catkin_ws/src/stretch_demos/setup.py build --build-base /home/hcal-group/catkin_ws/build/stretch_demos install --root=/ --install-layout=deb --prefix=/home/hcal-group/catkin_ws/install --install-scripts=/home/hcal-group/catkin_ws/install/bin
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: setup.py --help [cmd1 cmd2 ...]
+   or: setup.py --help-commands
+   or: setup.py cmd --help
+
+error: option --install-layout not recognized
+CMake Error at catkin_generated/safe_execute_install.cmake:4 (message):
+  
+  execute_process(/home/hcal-group/catkin_ws/build/stretch_demos/catkin_generated/python_distutils_install.sh)
+  returned error code
+Call Stack (most recent call first):
+  cmake_install.cmake:132 (include)
+
+
+make: *** [Makefile:129: install] Error 1

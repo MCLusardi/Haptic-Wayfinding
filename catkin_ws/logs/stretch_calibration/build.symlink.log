@@ -1,0 +1,3 @@
+Symlinking /home/hcal-group/catkin_ws/devel/lib/pkgconfig/stretch_calibration.pc
+Symlinking /home/hcal-group/catkin_ws/devel/share/stretch_calibration/cmake/stretch_calibrationConfig.cmake
+Symlinking /home/hcal-group/catkin_ws/devel/share/stretch_calibration/cmake/stretch_calibrationConfig-version.cmake
