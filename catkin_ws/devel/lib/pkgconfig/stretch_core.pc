@@ -1,8 +1,0 @@
-prefix=/home/wayfinders/Haptic-Wayfinding/catkin_ws/devel
-
-Name: stretch_core
-Description: Description of stretch_core
-Version: 0.2.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

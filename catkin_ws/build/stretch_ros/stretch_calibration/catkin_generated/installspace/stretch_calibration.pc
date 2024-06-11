@@ -1,8 +1,0 @@
-prefix=/home/wayfinders/Haptic-Wayfinding/catkin_ws/install
-
-Name: stretch_calibration
-Description: Description of stretch_calibration
-Version: 0.2.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
