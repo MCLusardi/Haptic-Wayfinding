@@ -18,9 +18,9 @@ class VibrationNode:
 
     def odom_callback(self, msg):
         # Process odometry data to detect turns
-        if msg.twist.twist.angular.z > 0.5:  # adjust this value to detect turns
+        if msg.twist.twist.angular.z > 0.1:  # adjust this value to detect turns
             self.trigger_rumble('R')  # send rumble command for right turn
-        elif msg.twist.twist.angular.z < -0.5:  # adjust this value to detect turns
+        elif msg.twist.twist.angular.z < -0.1:  # adjust this value to detect turns
             self.trigger_rumble('L')  # send rumble command for left turn
 
     def trigger_rumble(self, direction):
