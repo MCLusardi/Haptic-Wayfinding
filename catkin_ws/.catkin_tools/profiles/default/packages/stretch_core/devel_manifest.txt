@@ -1,0 +1,5 @@
+stretch_core
+/home/hcal-group/catkin_ws/devel/.private/stretch_core/cmake.lock /home/hcal-group/catkin_ws/devel/./cmake.lock
+/home/hcal-group/catkin_ws/devel/.private/stretch_core/lib/pkgconfig/stretch_core.pc /home/hcal-group/catkin_ws/devel/lib/pkgconfig/stretch_core.pc
+/home/hcal-group/catkin_ws/devel/.private/stretch_core/share/stretch_core/cmake/stretch_coreConfig-version.cmake /home/hcal-group/catkin_ws/devel/share/stretch_core/cmake/stretch_coreConfig-version.cmake
+/home/hcal-group/catkin_ws/devel/.private/stretch_core/share/stretch_core/cmake/stretch_coreConfig.cmake /home/hcal-group/catkin_ws/devel/share/stretch_core/cmake/stretch_coreConfig.cmake

@@ -1,0 +1,4 @@
+Symlinking /home/hcal-group/catkin_ws/devel/lib/python3/dist-packages/hello_helpers/__init__.py
+Symlinking /home/hcal-group/catkin_ws/devel/lib/pkgconfig/hello_helpers.pc
+Symlinking /home/hcal-group/catkin_ws/devel/share/hello_helpers/cmake/hello_helpersConfig.cmake
+Symlinking /home/hcal-group/catkin_ws/devel/share/hello_helpers/cmake/hello_helpersConfig-version.cmake

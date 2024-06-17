@@ -1,0 +1,29 @@
+[36mInstall the project...[0m
+-- Install configuration: ""
+-- Up-to-date: /home/hcal-group/catkin_ws/install/_setup_util.py
+-- Up-to-date: /home/hcal-group/catkin_ws/install/env.sh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/setup.bash
+-- Up-to-date: /home/hcal-group/catkin_ws/install/local_setup.bash
+-- Up-to-date: /home/hcal-group/catkin_ws/install/setup.sh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/local_setup.sh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/setup.zsh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/local_setup.zsh
+-- Up-to-date: /home/hcal-group/catkin_ws/install/.rosinstall
++ cd /home/hcal-group/catkin_ws/src/hello_helpers
++ mkdir -p /home/hcal-group/catkin_ws/install/lib/python3/dist-packages
++ /usr/bin/env PYTHONPATH=/home/hcal-group/catkin_ws/install/lib/python3/dist-packages:/home/hcal-group/catkin_ws/build/hello_helpers/lib/python3/dist-packages:/home/hcal-group/catkin_ws/install/lib/python3/dist-packages:/home/hcal-group/catkin_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages CATKIN_BINARY_DIR=/home/hcal-group/catkin_ws/build/hello_helpers /usr/bin/python3 /home/hcal-group/catkin_ws/src/hello_helpers/setup.py build --build-base /home/hcal-group/catkin_ws/build/hello_helpers install --root=/ --install-layout=deb --prefix=/home/hcal-group/catkin_ws/install --install-scripts=/home/hcal-group/catkin_ws/install/bin
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: setup.py --help [cmd1 cmd2 ...]
+   or: setup.py --help-commands
+   or: setup.py cmd --help
+
+error: option --install-layout not recognized
+CMake Error at catkin_generated/safe_execute_install.cmake:4 (message):
+  
+  execute_process(/home/hcal-group/catkin_ws/build/hello_helpers/catkin_generated/python_distutils_install.sh)
+  returned error code
+Call Stack (most recent call first):
+  cmake_install.cmake:132 (include)
+
+
+make: *** [Makefile:86: install] Error 1

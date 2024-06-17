@@ -1,0 +1,10 @@
+Compile cython code within cmake build
+/usr/lib/python3/dist-packages/Cython/Compiler/Main.py:369: FutureWarning: Cython directive 'language_level' not set, using 2 for now (Py2). This will change in a later release! File: /home/hcal-group/catkin_ws/src/stretch_funmap/src/stretch_funmap/cython_min_cost_path.pyx
+  tree = Parsing.p_module(s, pxd, full_module_name)
+In file included from /usr/include/python3.8/numpy/ndarraytypes.h:1830,
+                 from /usr/include/python3.8/numpy/ndarrayobject.h:12,
+                 from /usr/include/python3.8/numpy/arrayobject.h:4,
+                 from cython_min_cost_path.c:598:
+/usr/include/python3.8/numpy/npy_1_7_deprecated_api.h:17:2: warning: #warning "Using deprecated NumPy API, disable it with " "#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-Wcpp]
+   17 | #warning "Using deprecated NumPy API, disable it with " \
+      |  ^~~~~~~
