@@ -1,4 +1,5 @@
 import rospy
+from std_msgs.msg import Float32, Bool
 from sensor_msgs.msg import LaserScan
 
 import numpy as np
@@ -20,22 +21,16 @@ class CheckLidarDistance:
         self.left_lidar_sub = rospy.Subscriber('filtered_scan/left', LaserScan, self.left_scan_callback)
         self.right_lidar_sub = rospy.Subscriber('filtered_scan/right', LaserScan, self.right_scan_callback)
         print("Initialized Lidar Node")
-        # self.l_joycon = JoyCon(get_L_id())
-        # self.l_joycon.set_rumble(0, 0)
-        # self.l_joycon.set_leds([0, 0, 0, 0])
-        # self.l_joycon.set_player_lights(1)
-        # self.l_joycon.set_home_light(1)
-        # self.l_joycon.set_rumble(0, 0)
         
-        # self.r_joycon = JoyCon(get_R_id())
-        # self.r_joycon.set_rumble(0, 0)
-        # self.r_joycon.set_leds([0, 0, 0, 0])
-        # self.r_joycon.set_player_lights(1)
-        # self.r_joycon.set_home_light(1)
-        # self.r_joycon.set_rumble(0, 0)
+        self.rumble_flag_pub = rospy.Publisher('/rumble_flag', Bool, queue_size=1)
+        self.rumble_delay_pub = rospy.Publisher('/rumble_delay', Float32, queue_size=1)
+        self.blinker_delay_pub = rospy.Publisher('/blinker_delay', Float32, queue_size=1)
+
         self.front_flag = True
         self.left_flag = True
         self.right_flag = True
+        
+        self.LIDAR_DISTANCE = 0.75
 
     def front_scan_callback(self, msg):
         # Given points, calculate distance from center of robot to point
@@ -45,58 +40,54 @@ class CheckLidarDistance:
         # remove inf values
         ranges = ranges[ranges != np.inf]
         # print(np.mean(ranges))
-        if np.mean(ranges) < 0.75:
+        if np.mean(ranges) < self.LIDAR_DISTANCE:
             print("RUMBLE", np.mean(ranges))
             self.front_flag = True
-            # self.l_joycon.set_rumble(1, 1)
-            # self.r_joycon.set_rumble(1, 1)
+            self.rumble_flag_pub.publish(True)
+            self.rumble_delay_pub.publish(np.mean(ranges)/self.LIDAR_DISTANCE)
         else:
             if self.front_flag:
                 print("NO RUMBLE")
                 self.front_flag = False
-            pass
-            # self.l_joycon.set_rumble(0, 0)
-            # self.r_joycon.set_rumble(0, 0)
+                # self.rumble_flag_pub.publish(False)
+                self.rumble_delay_pub.publish(0)
             
     def left_scan_callback(self, msg):
         # Given points, calculate distance from center of robot to point
         # If distance is less than 0.5m, rumble joycons
         ranges = np.array(msg.ranges)
-        # remove inf values
-        ranges = ranges[ranges != np.inf]
+        ranges = ranges[ranges != np.inf] # remove inf values
+        
         # add a edge case since the left side has the vertical manipulator belt 
-        if len(ranges) >= 50 and np.mean(ranges) < 0.75:
+        # TODO: instead of the length, change range of angles in scan_filter.py
+        if len(ranges) >= 50 and np.mean(ranges) < self.LIDAR_DISTANCE:
             print("LEFT RUMBLE", np.mean(ranges))
             self.left_flag = True
-            # self.l_joycon.set_rumble(1, 1)
-            # self.r_joycon.set_rumble(1, 1)
+            self.rumble_flag_pub.publish(False)
+            self.rumble_delay_pub.publish(np.mean(ranges)/self.LIDAR_DISTANCE)
         else:
             if self.left_flag:
                 print("NO LEFT RUMBLE")
                 self.left_flag = False
-            pass
-        
+                self.rumble_delay_pub.publish(0)
+                
     def right_scan_callback(self, msg):
         # Given points, calculate distance from center of robot to point
         # If distance is less than 0.5m, rumble joycons
 
         ranges = np.array(msg.ranges)
-        # remove inf values
-        ranges = ranges[ranges != np.inf]
-        # print(np.mean(ranges))
-        if np.mean(ranges) < 0.75:
+        ranges = ranges[ranges != np.inf] # remove inf values
+        if np.mean(ranges) < self.LIDAR_DISTANCE:
             print("RIGHT RUMBLE", np.mean(ranges))
             self.right_flag = True
-            # self.l_joycon.set_rumble(1, 1)
-            # self.r_joycon.set_rumble(1, 1)
+            self.rumble_flag_pub.publish(False)
+            self.rumble_delay_pub.publish(np.mean(ranges)/self.LIDAR_DISTANCE)
         else:
             if self.right_flag:
                 print("NO RUMBLE")
                 self.right_flag = False
-            pass
-
-
-
+                self.rumble_delay_pub.publish(0)
+            
 
 if __name__ == '__main__':
     rospy.init_node('check_lidar_distance')
