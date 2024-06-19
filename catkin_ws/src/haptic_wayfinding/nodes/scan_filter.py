@@ -2,6 +2,7 @@ import rospy
 from numpy import linspace, inf
 from math import sin
 from sensor_msgs.msg import LaserScan
+from haptic_wayfinding.msg import FilteredScan
 import numpy as np
 from copy import copy
 
