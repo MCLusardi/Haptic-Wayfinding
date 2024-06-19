@@ -27,17 +27,17 @@ class HapticController():
         print("RUMBLE", msg.data)
         if self.rumble_flag:
             # play sound from front
-            pygame.mixer.music.load('data/rumble_both.wav')
+            pygame.mixer.music.load('../data/rumble_both.wav')
             pygame.mixer.music.play()
             time.sleep(abs(msg.data))
         else:
             # play sound from left or right side based on sign
             if msg.data < 0:
-                pygame.mixer.music.load('data/rumble_left.wav')
+                pygame.mixer.music.load('../data/rumble_left.wav')
                 pygame.mixer.music.play()
                 time.sleep(abs(msg.data))
             elif msg.data > 0:
-                pygame.mixer.music.load('data/rumble_right.wav')
+                pygame.mixer.music.load('../data/rumble_right.wav')
                 pygame.mixer.music.play()
                 time.sleep(abs(msg.data))
             else:
@@ -48,14 +48,20 @@ class HapticController():
         print("BLINKER", msg.data)
         if msg.data < 0:
             # play sound for left blinker
-            pygame.mixer.music.load('data/left_blinker_sound.wav')
+            pygame.mixer.music.load('../data/left_blinker_sound.wav')
             pygame.mixer.music.play()
             time.sleep(abs(msg.data))
         elif msg.data > 0:
             # play sound for right blinker
-            pygame.mixer.music.load('data/right_blinker_sound.wav')
+            pygame.mixer.music.load('../data/right_blinker_sound.wav')
             pygame.mixer.music.play()
             time.sleep(abs(msg.data))
         else:
             # stop sound
             pygame.mixer.music.stop()
+
+if __name__ == '__main__':
+    rospy.init_node('haptic_controller')
+    cld = HapticController()
+    rospy.spin()
+

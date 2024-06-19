@@ -27,10 +27,10 @@ class CheckLidarDistance:
         self.blinker_delay_pub = rospy.Publisher('/blinker_delay', Float32, queue_size=1)
 
         self.front_flag = True
-        self.left_flag = True
-        self.right_flag = True
+        # self.left_flag = True
+        # self.right_flag = True
         
-        self.LIDAR_DISTANCE = 0.75
+        self.LIDAR_DISTANCE = 0.5
 
     def front_scan_callback(self, msg):
         # Given points, calculate distance from center of robot to point
@@ -44,7 +44,7 @@ class CheckLidarDistance:
             print("RUMBLE", np.mean(ranges))
             self.front_flag = True
             self.rumble_flag_pub.publish(True)
-            self.rumble_delay_pub.publish(np.mean(ranges)/self.LIDAR_DISTANCE)
+            self.rumble_delay_pub.publish(1 - np.mean(ranges)/self.LIDAR_DISTANCE)
         else:
             if self.front_flag:
                 print("NO RUMBLE")
@@ -62,14 +62,15 @@ class CheckLidarDistance:
         # TODO: instead of the length, change range of angles in scan_filter.py
         if len(ranges) >= 50 and np.mean(ranges) < self.LIDAR_DISTANCE:
             print("LEFT RUMBLE", np.mean(ranges))
-            self.left_flag = True
-            self.rumble_flag_pub.publish(False)
-            self.rumble_delay_pub.publish(np.mean(ranges)/self.LIDAR_DISTANCE)
-        else:
-            if self.left_flag:
-                print("NO LEFT RUMBLE")
-                self.left_flag = False
-                self.rumble_delay_pub.publish(0)
+            # self.left_flag = True
+            if not self.front_flag:
+                self.rumble_flag_pub.publish(False)
+            self.rumble_delay_pub.publish(-(1 - np.mean(ranges)/self.LIDAR_DISTANCE))
+        # else:
+        #     if self.left_flag:
+        #         print("NO LEFT RUMBLE")
+        #         self.left_flag = False
+        #         self.rumble_delay_pub.publish(0)
                 
     def right_scan_callback(self, msg):
         # Given points, calculate distance from center of robot to point
@@ -79,14 +80,15 @@ class CheckLidarDistance:
         ranges = ranges[ranges != np.inf] # remove inf values
         if np.mean(ranges) < self.LIDAR_DISTANCE:
             print("RIGHT RUMBLE", np.mean(ranges))
-            self.right_flag = True
-            self.rumble_flag_pub.publish(False)
-            self.rumble_delay_pub.publish(np.mean(ranges)/self.LIDAR_DISTANCE)
-        else:
-            if self.right_flag:
-                print("NO RUMBLE")
-                self.right_flag = False
-                self.rumble_delay_pub.publish(0)
+            # self.right_flag = True
+            if not self.front_flag:
+                self.rumble_flag_pub.publish(False)
+            self.rumble_delay_pub.publish(1 - np.mean(ranges)/self.LIDAR_DISTANCE)
+        # else:
+        #     if self.right_flag:
+        #         print("NO RIGHT RUMBLE")
+        #         self.right_flag = False
+        #         self.rumble_delay_pub.publish(0)
             
 
 if __name__ == '__main__':
