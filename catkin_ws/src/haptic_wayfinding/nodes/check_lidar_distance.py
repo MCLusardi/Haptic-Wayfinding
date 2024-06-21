@@ -1,5 +1,5 @@
 import rospy
-from haptic_wayfinding.msg import FilteredScan, HapticRumble
+from haptic_wayfinding.msg import FilteredScan, HapticFeedback
 # from std_msgs.msg import Float32, Bool
 # from sensor_msgs.msg import LaserScan
 
@@ -19,14 +19,14 @@ import numpy as np
 class CheckLidarDistance:
     def __init__(self):
         self.scan_sub = rospy.Subscriber('/filtered_scan', FilteredScan, self.scan_callback)
-        self.rumble_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
+        self.rumble_pub = rospy.Publisher('/haptic_blinker', HapticFeedback, queue_size=1)
         print("Initialized Lidar Node")
 
         self.LIDAR_DISTANCE = 0.75
 
     def scan_callback(self, msg):
         # Priority list: right + left, front
-        pub_msg = HapticRumble()
+        pub_msg = HapticFeedback()
 
         left_ranges = np.array(msg.left.ranges)
         left_ranges = left_ranges[left_ranges != np.inf] # remove inf values

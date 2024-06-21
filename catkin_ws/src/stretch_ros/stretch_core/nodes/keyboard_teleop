@@ -12,6 +12,8 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 
 import hello_helpers.hello_misc as hm
 
+from haptic_wayfinding.msg import HapticFeedback
+
 
 class GetKeyboardCommands:
 
@@ -35,6 +37,8 @@ class GetKeyboardCommands:
         self.big_rad = self.rad_per_deg * self.big_deg
         self.big_translate = 0.06
         self.mode = 'position' #'manipulation' #'navigation'
+        
+        self.rumble_pub = rospy.Publisher('/haptic_blinker', HapticFeedback, queue_size=10)
 
     def get_deltas(self):
         if self.step_size == 'small':
@@ -267,9 +271,17 @@ class GetKeyboardCommands:
             # 1 or end key 
             if c == '7' or c == '\x1b[H':
                 command = {'joint': 'rotate_mobile_base', 'inc': self.get_deltas()['rad']}
+                # TODO: add left blinker
+                rumble_msg = HapticRumble()
+                rumble_msg.left = True
+                rumble_msg.left_volume = 1.0
+                rumble_msg.left_delay = 1.0
+                self.rumble_pub.publish(rumble_msg)
+                
             # 3 or pg down 5~
             if c == '9' or c == '\x1b[5':
                 command = {'joint': 'rotate_mobile_base', 'inc': -self.get_deltas()['rad']}
+                # TODO: add right blinker
         elif self.mode == 'navigation':
             rospy.loginfo('ERROR: Navigation mode is not currently supported.')
 
