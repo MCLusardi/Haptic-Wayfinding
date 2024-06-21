@@ -1,5 +1,9 @@
-bool left_rumble
-bool right_rumble
-bool front_rumble
-float32 intensity
-float32 delay
+bool left
+bool right
+bool front
+float32 left_volume
+float32 left_delay
+float32 right_volume
+float32 right_delay
+float32 front_volume
+float32 front_delay

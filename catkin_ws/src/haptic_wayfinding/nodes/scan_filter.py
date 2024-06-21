@@ -15,9 +15,7 @@ class ScanFilter:
         self.width = 1.0
         self.extent = self.width / 2.0
         self.sub = rospy.Subscriber('/scan', LaserScan, self.callback)
-        self.front_pub = rospy.Publisher('filtered_scan/front', LaserScan, queue_size=10)
-        self.left_pub = rospy.Publisher('filtered_scan/left', LaserScan, queue_size=10)
-        self.right_pub = rospy.Publisher('filtered_scan/right', LaserScan, queue_size=10)
+        self.pub = rospy.Publisher('/filtered_scan', FilteredScan, queue_size=1)
         rospy.loginfo("Publishing the filtered_scan topic. Use RViz to visualize.")
 
     def callback(self,msg):
@@ -36,25 +34,32 @@ class ScanFilter:
         # points = [r * sin(theta) if (theta < -np.pi/4 or theta > np.pi/6) else inf for r,theta in zip(front_msg.ranges, angles)]
         new_ranges = [r if abs(y) < self.extent else inf for r,y in zip(front_msg.ranges, points)]
         front_msg.ranges = new_ranges
-        self.front_pub.publish(front_msg)
         
         # left scan filter
         left_msg = copy(msg)
-        points = [r * sin(theta) if (theta > -2.0 and theta < -0.5) else inf for r,theta in zip(left_msg.ranges, angles)]
+        # points = [r * sin(theta) if (theta > -2.0 and theta < -1.0) else inf for r,theta in zip(left_msg.ranges, angles)]
+        # print the angles with the top 30 closest points as a tuple of (angle, distance)
+        # print([(angles[i], left_msg.ranges[i]) for i in np.argsort(left_msg.ranges)[:30]])
+        # print("Smallest angle:", min([(angles[i], left_msg.ranges[i]) for i in np.argsort(left_msg.ranges)[:50]], key=lambda x: x[0]))
+        # print("Largest angle:", max([(angles[i], left_msg.ranges[i]) for i in np.argsort(left_msg.ranges)[:43]], key=lambda x: x[0]))
+        points = [r * sin(theta) if (theta > -2.0 and theta < -1.0 and not (-1.15 < theta < -0.88)) else inf for r,theta in zip(left_msg.ranges, angles)]
         new_ranges = [r if abs(y) < self.extent else inf for r,y in zip(left_msg.ranges, points)]
         left_msg.ranges = new_ranges
-        self.left_pub.publish(left_msg)
         
         
         # right scan filter
         right_msg = copy(msg)
-        points = [r * sin(theta) if (theta > 0.5 and theta < 2.0) else inf for r,theta in zip(right_msg.ranges, angles)]
+        points = [r * sin(theta) if (theta > 1.0 and theta < 2.0) else inf for r,theta in zip(right_msg.ranges, angles)]
         new_ranges = [r if abs(y) < self.extent else inf for r,y in zip(right_msg.ranges, points)]
         right_msg.ranges = new_ranges
-        self.right_pub.publish(right_msg)
-        
 
+        pub_msg = FilteredScan()
+        pub_msg.front = front_msg
+        pub_msg.left = left_msg
+        pub_msg.right = right_msg
+        self.pub.publish(pub_msg)
+        
 if __name__ == '__main__':
     rospy.init_node('scan_filter')
-    ScanFilter()
+    node = ScanFilter()
     rospy.spin()

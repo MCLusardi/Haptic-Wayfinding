@@ -1,3 +1,3 @@
-sensor_msgs/LaserScan front_scan
-sensor_msgs/LaserScan left_scan
-sensor_msgs/LaserScan right_scan
+sensor_msgs/LaserScan front
+sensor_msgs/LaserScan left
+sensor_msgs/LaserScan right
