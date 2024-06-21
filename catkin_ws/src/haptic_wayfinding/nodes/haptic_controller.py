@@ -2,7 +2,6 @@ import rospy
 from std_msgs.msg import Float32, Bool
 import pygame
 import time
-
 from haptic_wayfinding.msg import HapticRumble
 
 # Node that will play sounds and updates delay from subscriber
