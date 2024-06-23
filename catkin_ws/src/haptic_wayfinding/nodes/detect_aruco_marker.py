@@ -3,6 +3,7 @@
 import cv2
 import cv2.aruco as aruco
 import numpy as np
+import os
 import rospy
 from haptic_wayfinding.msg import HapticRumble
 
@@ -13,6 +14,15 @@ class ArucoDetector:
         self.aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters_create()
         
+        # Construct the path to the calibration data file
+        package_path = os.path.dirname(__file__)  # Get the current directory of this script
+        calibration_file = os.path.join(package_path, '../scripts/calibration_data.npz')
+
+        # Load calibration data
+        with np.load(calibration_file) as data:
+            self.camera_matrix = data['camera_matrix']
+            self.dist_coeffs = data['dist_coeffs']
+
     def detect_marker(self):
         while not rospy.is_shutdown():
             ret, frame = self.cap.read()
