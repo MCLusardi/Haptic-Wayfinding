@@ -36,7 +36,7 @@ class ArucoDetector:
                 for i in range(len(ids)):
                     rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners[i], 0.05, self.camera_matrix, self.dist_coeffs)
                     distance = np.linalg.norm(tvec)
-                    if 5 <= distance <= 10:
+                    if 30 <= distance <= 120:
                         self.publish_haptic_feedback()
             cv2.imshow('Frame', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):

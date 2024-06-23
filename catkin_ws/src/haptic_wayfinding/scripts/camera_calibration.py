@@ -20,7 +20,10 @@ objp[:, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
 # Start capturing images for calibration
 cap = cv2.VideoCapture(0)
 
-while True:
+# Number of checkerboard images to capture
+num_calibration_images = 30  # Set your desired number here
+
+while len(objpoints) < num_calibration_images:
     ret, frame = cap.read()
     if not ret:
         continue
@@ -42,11 +45,15 @@ cap.release()
 cv2.destroyAllWindows()
 
 # Performing camera calibration
-ret, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+if len(objpoints) > 0:
+    gray_shape = gray.shape[::-1]
+    ret, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray_shape, None, None)
 
-# Save the calibration results
-np.savez('calibration_data.npz', camera_matrix=camera_matrix, dist_coeffs=dist_coeffs)
+    # Save the calibration results
+    np.savez('calibration_data.npz', camera_matrix=camera_matrix, dist_coeffs=dist_coeffs)
 
-print("Camera calibration complete.")
-print("Camera matrix:\n", camera_matrix)
-print("Distortion coefficients:\n", dist_coeffs)
+    print("Camera calibration complete.")
+    print("Camera matrix:\n", camera_matrix)
+    print("Distortion coefficients:\n", dist_coeffs)
+else:
+    print("No 6 x 9 checkerboard images captured for calibration.")
