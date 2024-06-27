@@ -38,10 +38,14 @@ class LandmarkDetector:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             corners, ids, rejected = self.detector.detectMarkers(gray)
 
+            
             if ids is not None:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
                 for i in range(len(ids)):
-                    rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners[i], 0.05, self.camera_matrix, self.dist_coeffs)
+                    # Estimate pose using solvePnP
+                    rvec, tvec, _ = cv2.solvePnP(self.detector.getMarkerPoints(ids[i]), corners[i], self.camera_matrix, self.dist_coeffs)
+
+                    # Log distance and pose information
                     distance = np.linalg.norm(tvec)
                     rospy.loginfo(f"Marker ID: {ids[i]}, Distance: {distance}")
 
