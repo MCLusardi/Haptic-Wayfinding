@@ -1,3 +1,5 @@
+<!-- roslaunch haptic_wayfinding rumble.launch -->
+
 <launch>
     <node name="scan_filter" pkg="haptic_wayfinding" type="scan_filter.py" output="screen"></node>
     <node name="check_lidar_distance" pkg="haptic_wayfinding" type="check_lidar_distance.py" output="screen"></node>
