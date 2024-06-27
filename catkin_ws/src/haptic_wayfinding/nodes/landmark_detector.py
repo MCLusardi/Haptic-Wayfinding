@@ -7,12 +7,12 @@ import rospy
 from haptic_wayfinding.msg import HapticRumble
 import os
 
-class ArucoDetector:
+class LandmarkDetector:
     def __init__(self):
         self.cap = cv2.VideoCapture(0)
         self.haptic_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
-        self.aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
-        self.parameters = aruco.DetectorParameters_create()
+        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
+        self.parameters = aruco.DetectorParameters()
         
         # Load camera calibration data
         package_path = os.path.dirname(__file__)
