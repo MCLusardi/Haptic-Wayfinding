@@ -13,6 +13,7 @@ class LandmarkDetector:
         self.haptic_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters()
+        self.detector = aruco.ArucoDetector(self.aruco_dict, self.aruco_detection_parameters)
 
         # Define the intrinsic parameters of Intel RealSense D435i
         fx = 616.537  # focal length in x direction (in pixels)
@@ -35,7 +36,7 @@ class LandmarkDetector:
                 continue
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            corners, ids, rejected = aruco.detectMarkers(gray, self.aruco_dict, parameters=self.parameters)
+            corners, ids, rejected = self.detector.detectMarkers(gray)
 
             if ids is not None:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
