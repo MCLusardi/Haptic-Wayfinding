@@ -13,13 +13,19 @@ class LandmarkDetector:
         self.haptic_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters()
-        
-        # Load camera calibration data
-        package_path = os.path.dirname(__file__)
-        calibration_file = os.path.join(package_path, '../scripts/calibration_data.npz')
-        with np.load(calibration_file) as data:
-            self.camera_matrix = data['camera_matrix']
-            self.dist_coeffs = data['dist_coeffs']
+
+        # Define the intrinsic parameters of Intel RealSense D435i
+        fx = 616.537  # focal length in x direction (in pixels)
+        fy = 616.979  # focal length in y direction (in pixels)
+        cx = 325.952  # principal point x-coordinate (in pixels)
+        cy = 253.313  # principal point y-coordinate (in pixels)
+
+        self.camera_matrix = np.array([[fx, 0, cx],
+                          [0, fy, cy],
+                          [0, 0, 1]], dtype=np.float64)
+
+        # Distortion coefficients for RealSense cameras are typically low
+        self.dist_coeffs = np.zeros((5, 1), dtype=np.float64)  # Assuming no distortion
 
     def detect_marker(self):
         while not rospy.is_shutdown():
