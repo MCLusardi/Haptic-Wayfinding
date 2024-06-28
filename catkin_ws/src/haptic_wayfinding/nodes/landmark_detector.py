@@ -13,7 +13,7 @@ class LandmarkDetector:
         self.haptic_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters()
-        self.detector = aruco.ArucoDetector(self.aruco_dict, self.aruco_detection_parameters)
+        self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
 
         # Define the intrinsic parameters of Intel RealSense D435i
         fx = 616.537  # focal length in x direction (in pixels)
@@ -28,6 +28,11 @@ class LandmarkDetector:
         # Distortion coefficients for RealSense cameras are typically low
         self.dist_coeffs = np.zeros((5, 1), dtype=np.float64)  # Assuming no distortion
 
+        marker_size = 0.05
+        self.marker_points = np.array([[-marker_size / 2, marker_size / 2, 0],
+                                       [marker_size / 2, marker_size / 2, 0],
+                                       [marker_size / 2, -marker_size / 2, 0],
+                                       [-marker_size / 2, -marker_size / 2, 0]], dtype=np.float32)
     def detect_marker(self):
         while not rospy.is_shutdown():
             ret, frame = self.cap.read()
@@ -43,13 +48,13 @@ class LandmarkDetector:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
                 for i in range(len(ids)):
                     # Estimate pose using solvePnP
-                    rvec, tvec, _ = cv2.solvePnP(self.detector.getMarkerPoints(ids[i]), corners[i], self.camera_matrix, self.dist_coeffs)
+                    rvec, tvec, _ = cv2.solvePnP(self.marker_points, corners[i], self.camera_matrix, self.dist_coeffs)
 
                     # Log distance and pose information
                     distance = np.linalg.norm(tvec)
                     rospy.loginfo(f"Marker ID: {ids[i]}, Distance: {distance}")
 
-                    if 5 <= distance <= 10:
+                    if 30 <= distance <= 240:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
                         self.publish_haptic_feedback()
             else:
@@ -80,6 +85,6 @@ class LandmarkDetector:
 
 if __name__ == '__main__':
     rospy.init_node('aruco_detector')
-    detector = ArucoDetector()
+    detector = LandmarkDetector()
     detector.detect_marker()
     rospy.spin()
