@@ -16,10 +16,10 @@ class LandmarkDetector:
         self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
 
         # Define the intrinsic parameters of Intel RealSense D435i
-        fx = 616.537  # focal length in x direction (in pixels)
-        fy = 616.979  # focal length in y direction (in pixels)
-        cx = 325.952  # principal point x-coordinate (in pixels)
-        cy = 253.313  # principal point y-coordinate (in pixels)
+        fx = 322.282410  # focal length in x direction (in pixels)
+        fy = 322.282410  # focal length in y direction (in pixels)
+        cx = 320.818268  # principal point x-coordinate (in pixels)
+        cy = 178.779297  # principal point y-coordinate (in pixels)
 
         self.camera_matrix = np.array([[fx, 0, cx],
                           [0, fy, cy],
@@ -28,7 +28,7 @@ class LandmarkDetector:
         # Distortion coefficients for RealSense cameras are typically low
         self.dist_coeffs = np.zeros((5, 1), dtype=np.float64)  # Assuming no distortion
 
-        marker_size = 0.05
+        marker_size = 0.1 #(in meters)
         self.marker_points = np.array([[-marker_size / 2, marker_size / 2, 0],
                                        [marker_size / 2, marker_size / 2, 0],
                                        [marker_size / 2, -marker_size / 2, 0],
