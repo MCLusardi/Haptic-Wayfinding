@@ -48,13 +48,19 @@ class LandmarkDetector:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
                 for i in range(len(ids)):
                     # Estimate pose using solvePnP
-                    rvec, tvec, _ = cv2.solvePnP(self.marker_points, corners[i], self.camera_matrix, self.dist_coeffs)
+                    corners_reshaped = corners[i].reshape(-1, 2)
+                    rvec, tvec, _ = cv2.solvePnP(self.marker_points, corners_reshaped, self.camera_matrix, self.dist_coeffs)
 
                     # Log distance and pose information
-                    distance = np.linalg.norm(tvec)
-                    rospy.loginfo(f"Marker ID: {ids[i]}, Distance: {distance}")
+                    rospy.loginfo(f"tvec: {tvec.flatten()}")
+                    distance_z = tvec[2][0]  # Depth displacement (z-value)
+                    distance_z = np.abs(distance_z)
+                    rospy.loginfo(f"Marker ID: {ids[i]}, Distance (z-value): {distance_z}")
 
-                    if 30 <= distance <= 240:
+                    distance_x = tvec[0][0]  # Lateral displacement (x-value)
+                    distance_y = tvec[1][0]  # Vertical displacement (y-value)
+
+                    if 0.0 <= distance_z <= 1.0:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
                         self.publish_haptic_feedback()
             else:
