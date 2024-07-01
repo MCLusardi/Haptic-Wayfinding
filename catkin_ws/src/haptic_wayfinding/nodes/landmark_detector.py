@@ -28,7 +28,7 @@ class LandmarkDetector:
         # Distortion coefficients for RealSense cameras are typically low
         self.dist_coeffs = np.zeros((5, 1), dtype=np.float64)  # Assuming no distortion
 
-        marker_size = 0.1 #(in meters)
+        marker_size = 0.152 #(in meters)
         self.marker_points = np.array([[-marker_size / 2, marker_size / 2, 0],
                                        [marker_size / 2, marker_size / 2, 0],
                                        [marker_size / 2, -marker_size / 2, 0],
