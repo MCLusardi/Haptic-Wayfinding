@@ -4,13 +4,13 @@ import cv2
 import cv2.aruco as aruco
 import numpy as np
 import rospy
-from haptic_wayfinding.msg import HapticRumble
+from std_msgs.msg import Bool
 import os
 
 class LandmarkDetector:
     def __init__(self):
         self.cap = cv2.VideoCapture(0)
-        self.haptic_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
+        self.haptic_pub = rospy.Publisher('/landmark_in_range', Bool, queue_size=1)
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters()
         self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
@@ -46,6 +46,7 @@ class LandmarkDetector:
             
             if ids is not None:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
+                marker_in_range = False
                 for i in range(len(ids)):
                     # Estimate pose using solvePnP
                     corners_reshaped = corners[i].reshape(-1, 2)
@@ -62,7 +63,9 @@ class LandmarkDetector:
 
                     if 0.0 <= distance_z <= 1.0:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
-                        self.publish_haptic_feedback()
+                        marker_in_range = True
+                if marker_in_range:
+                    self.publish_haptic_feedback(marker_in_range)
             else:
                 rospy.loginfo("No markers detected.")
 
@@ -74,20 +77,11 @@ class LandmarkDetector:
         self.cap.release()
         cv2.destroyAllWindows()
     
-    def publish_haptic_feedback(self):
-        rospy.loginfo("Before Publishing HapticRumble message.")
-        msg = HapticRumble()
-        msg.left = True
-        msg.left_volume = 1.0
-        msg.left_delay = 0.5
-        msg.right = True
-        msg.right_volume = 1.0
-        msg.right_delay = 0.5
-        msg.front = True
-        msg.front_volume = 1.0
-        msg.front_delay = 0.5
-        rospy.loginfo("Publishing HapticRumble message.")
-        self.haptic_pub.publish(msg)
+    def publish_haptic_feedback(self, in_range):
+        rospy.loginfo(f"Publishing to /landmark_in_range: {in_range}")
+        msg = Bool()
+        msg.data = in_range
+        self.landmark_pub.publish(msg)
 
 if __name__ == '__main__':
     rospy.init_node('aruco_detector')

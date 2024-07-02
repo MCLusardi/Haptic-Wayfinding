@@ -15,6 +15,7 @@ class HapticController():
         # # Subscribes to the delay of the blinker, between -1 and 1
         # self.blinker_sub = rospy.Subscriber('/blinker_delay', Float32, self.blinker_callback, queue_size=1)
         self.rumble_sub = rospy.Subscriber('/haptic_rumble', HapticRumble, self.rumble_callback, queue_size=1)
+        self.landmark_sub = rospy.Subscriber('/landmark_in_range', Bool, self.landmark_callback, queue_size=1)
         # Initialize pygame mixer
         pygame.mixer.init()
         self.sleep_factor = 0.75
@@ -66,6 +67,18 @@ class HapticController():
         else:
             # stop sound
             pygame.mixer.music.stop()
+    
+    def landmark_callback(self, msg):
+        if msg.data:
+            self.play_rumble()
+    
+    def play_rumble(self):
+        pygame.mixer.music.load('../data/rumble_both.wav')
+        pygame.mixer.music.play()
+        pygame.mixer.music.set_volume(1.0)
+        time.sleep(0.5 * self.sleep_factor)
+        pygame.mixer.music.stop()
+        time.sleep(0.5 * self.sleep_factor)
 
 if __name__ == '__main__':
     rospy.init_node('haptic_controller')
