@@ -70,15 +70,28 @@ class HapticController():
     
     def landmark_callback(self, msg):
         if msg.data:
-            self.play_rumble()
+            marker_id = rospy.get_param('detected_marker_id', -1)
+            self.play_rumble(marker_id)
     
-    def play_rumble(self):
-        pygame.mixer.music.load('../data/rumble_both.wav')
-        pygame.mixer.music.play()
-        pygame.mixer.music.set_volume(1.0)
-        time.sleep(0.5 * self.sleep_factor)
-        pygame.mixer.music.stop()
-        time.sleep(0.5 * self.sleep_factor)
+    def play_rumble(self, marker_id):
+        if 245 <= marker_id <= 249:
+            if marker_id == 245:
+                sound_file = '../data/rumble_both.wav'
+            elif marker_id == 246:
+                sound_file = '../data/rumble_left.wav'
+            elif marker_id == 247:
+                sound_file = '../data/rumble_right.wav'
+            elif marker_id == 248:
+                sound_file = '../data/rumble_both.wav'
+            else:
+                sound_file = '../data/rumble_left.wav'  
+
+            pygame.mixer.music.load(sound_file)
+            pygame.mixer.music.play()
+            pygame.mixer.music.set_volume(1.0)
+            time.sleep(0.5 * self.sleep_factor)
+            pygame.mixer.music.stop()
+            time.sleep(0.5 * self.sleep_factor)
 
 if __name__ == '__main__':
     rospy.init_node('haptic_controller')

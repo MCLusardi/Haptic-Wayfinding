@@ -9,7 +9,7 @@ import os
 
 class LandmarkDetector:
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
+        self.cap = self.open_camera()
         self.haptic_pub = rospy.Publisher('/landmark_in_range', Bool, queue_size=1)
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters()
@@ -33,6 +33,15 @@ class LandmarkDetector:
                                        [marker_size / 2, marker_size / 2, 0],
                                        [marker_size / 2, -marker_size / 2, 0],
                                        [-marker_size / 2, -marker_size / 2, 0]], dtype=np.float32)
+    
+    def open_camera(self):
+        for i in range(3):  # try camera indices 0, 1, 2
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                rospy.loginfo(f"Camera {i} opened successfully.")
+                return cap
+        raise RuntimeError("No camera could be opened.")
+    
     def detect_marker(self):
         while not rospy.is_shutdown():
             ret, frame = self.cap.read()
@@ -64,8 +73,8 @@ class LandmarkDetector:
                     if 0.0 <= distance_z <= 1.0:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
                         marker_in_range = True
-                if marker_in_range:
-                    self.publish_haptic_feedback(marker_in_range)
+                if 245 <= ids[i] <= 249:
+                    self.publish_haptic_feedback(marker_in_range, ids[i])
             else:
                 rospy.loginfo("No markers detected.")
 
@@ -77,11 +86,12 @@ class LandmarkDetector:
         self.cap.release()
         cv2.destroyAllWindows()
     
-    def publish_haptic_feedback(self, in_range):
-        rospy.loginfo(f"Publishing to /landmark_in_range: {in_range}")
+    def publish_haptic_feedback(self, in_range, marker_id):
+        rospy.loginfo(f"Publishing to /landmark_in_range: {in_range} for marker ID: {marker_id}")
         msg = Bool()
         msg.data = in_range
         self.landmark_pub.publish(msg)
+        rospy.set_param('detected_marker_id', marker_id)
 
 if __name__ == '__main__':
     rospy.init_node('aruco_detector')
