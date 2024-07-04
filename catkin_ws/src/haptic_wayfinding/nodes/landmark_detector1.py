@@ -11,6 +11,7 @@ class LandmarkDetector:
     def __init__(self):
         self.pipeline = rs.pipeline()
         config = rs.config()
+        config.enable_device('153122077062')
         config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
         self.pipeline.start(config)
@@ -55,7 +56,7 @@ class LandmarkDetector:
                         marker_in_range = True
 
                     if 245 <= ids[i] <= 249:
-                        self.publish_haptic_feedback(marker_in_range, ids[i])
+                        self.publish_haptic_feedback(marker_in_range, int(ids[i]))
             else:
                 rospy.loginfo("No markers detected.")
 
