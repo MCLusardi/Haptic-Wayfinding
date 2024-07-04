@@ -74,7 +74,7 @@ class LandmarkDetector:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
                         marker_in_range = True
                 if 245 <= ids[i] <= 249:
-                    self.publish_haptic_feedback(marker_in_range, ids[i])
+                    self.publish_haptic_feedback(marker_in_range, int(ids[i]))
             else:
                 rospy.loginfo("No markers detected.")
 
@@ -90,7 +90,7 @@ class LandmarkDetector:
         rospy.loginfo(f"Publishing to /landmark_in_range: {in_range} for marker ID: {marker_id}")
         msg = Bool()
         msg.data = in_range
-        self.landmark_pub.publish(msg)
+        self.haptic_pub.publish(msg)
         rospy.set_param('detected_marker_id', marker_id)
 
 if __name__ == '__main__':
