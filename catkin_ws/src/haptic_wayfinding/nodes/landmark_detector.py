@@ -5,76 +5,58 @@ import cv2.aruco as aruco
 import numpy as np
 import rospy
 from std_msgs.msg import Bool
-import os
+import pyrealsense2 as rs
 
 class LandmarkDetector:
     def __init__(self):
-        self.cap = self.open_camera()
+        self.pipeline = rs.pipeline()
+        config = rs.config()
+        config.enable_device('153122077062')
+        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+        self.pipeline.start(config)
+
+        # Align depth frame to color frame
+        self.align = rs.align(rs.stream.color)
+
         self.haptic_pub = rospy.Publisher('/landmark_in_range', Bool, queue_size=1)
         self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
         self.parameters = aruco.DetectorParameters()
         self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
-
-        # Define the intrinsic parameters of Intel RealSense D435i
-        fx = 322.282410  # focal length in x direction (in pixels)
-        fy = 322.282410  # focal length in y direction (in pixels)
-        cx = 320.818268  # principal point x-coordinate (in pixels)
-        cy = 178.779297  # principal point y-coordinate (in pixels)
-
-        self.camera_matrix = np.array([[fx, 0, cx],
-                          [0, fy, cy],
-                          [0, 0, 1]], dtype=np.float64)
-
-        # Distortion coefficients for RealSense cameras are typically low
-        self.dist_coeffs = np.zeros((5, 1), dtype=np.float64)  # Assuming no distortion
-
-        marker_size = 0.152 #(in meters)
-        self.marker_points = np.array([[-marker_size / 2, marker_size / 2, 0],
-                                       [marker_size / 2, marker_size / 2, 0],
-                                       [marker_size / 2, -marker_size / 2, 0],
-                                       [-marker_size / 2, -marker_size / 2, 0]], dtype=np.float32)
-    
-    def open_camera(self):
-        for i in range(3):  # try camera indices 0, 1, 2
-            cap = cv2.VideoCapture(i)
-            if cap.isOpened():
-                rospy.loginfo(f"Camera {i} opened successfully.")
-                return cap
-        raise RuntimeError("No camera could be opened.")
     
     def detect_marker(self):
         while not rospy.is_shutdown():
-            ret, frame = self.cap.read()
-            if not ret:
-                rospy.logwarn("Failed to capture frame from camera.")
+            frames = self.pipeline.wait_for_frames()
+            aligned_frames = self.align.process(frames)
+            depth_frame = aligned_frames.get_depth_frame()
+            color_frame = aligned_frames.get_color_frame()
+
+            if not depth_frame or not color_frame:
+                rospy.logwarn("Failed to capture frames from camera.")
                 continue
 
+            frame = np.asanyarray(color_frame.get_data())
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             corners, ids, rejected = self.detector.detectMarkers(gray)
 
-            
             if ids is not None:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
                 marker_in_range = False
                 for i in range(len(ids)):
-                    # Estimate pose using solvePnP
+                    # Get the depth value for the center of the marker
                     corners_reshaped = corners[i].reshape(-1, 2)
-                    rvec, tvec, _ = cv2.solvePnP(self.marker_points, corners_reshaped, self.camera_matrix, self.dist_coeffs)
+                    center_x = int(corners_reshaped[:, 0].mean())
+                    center_y = int(corners_reshaped[:, 1].mean())
+                    distance_z = depth_frame.get_distance(center_x, center_y)
 
-                    # Log distance and pose information
-                    rospy.loginfo(f"tvec: {tvec.flatten()}")
-                    distance_z = tvec[2][0]  # Depth displacement (z-value)
-                    distance_z = np.abs(distance_z)
                     rospy.loginfo(f"Marker ID: {ids[i]}, Distance (z-value): {distance_z}")
-
-                    distance_x = tvec[0][0]  # Lateral displacement (x-value)
-                    distance_y = tvec[1][0]  # Vertical displacement (y-value)
 
                     if 0.0 <= distance_z <= 1.0:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
                         marker_in_range = True
-                if 245 <= ids[i] <= 249:
-                    self.publish_haptic_feedback(marker_in_range, int(ids[i]))
+
+                    if 245 <= ids[i] <= 249:
+                        self.publish_haptic_feedback(marker_in_range, int(ids[i]))
             else:
                 rospy.loginfo("No markers detected.")
 
@@ -83,9 +65,9 @@ class LandmarkDetector:
                 rospy.loginfo("Quitting detection loop.")
                 break
 
-        self.cap.release()
+        self.pipeline.stop()
         cv2.destroyAllWindows()
-    
+
     def publish_haptic_feedback(self, in_range, marker_id):
         rospy.loginfo(f"Publishing to /landmark_in_range: {in_range} for marker ID: {marker_id}")
         msg = Bool()
