@@ -4,43 +4,59 @@ import cv2
 import cv2.aruco as aruco
 import numpy as np
 import rospy
-from haptic_wayfinding.msg import HapticRumble
-import os
+from std_msgs.msg import Bool
+import pyrealsense2 as rs
 
 class LandmarkDetector:
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
-        self.haptic_pub = rospy.Publisher('/haptic_rumble', HapticRumble, queue_size=1)
-        self.aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
-        self.parameters = aruco.DetectorParameters_create()
-        
-        # Load camera calibration data
-        package_path = os.path.dirname(__file__)
-        calibration_file = os.path.join(package_path, '../scripts/calibration_data.npz')
-        with np.load(calibration_file) as data:
-            self.camera_matrix = data['camera_matrix']
-            self.dist_coeffs = data['dist_coeffs']
+        self.pipeline = rs.pipeline()
+        config = rs.config()
+        config.enable_device('153122077062')
+        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+        self.pipeline.start(config)
 
+        # Align depth frame to color frame
+        self.align = rs.align(rs.stream.color)
+
+        self.haptic_pub = rospy.Publisher('/landmark_in_range', Bool, queue_size=1)
+        self.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
+        self.parameters = aruco.DetectorParameters()
+        self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
+    
     def detect_marker(self):
         while not rospy.is_shutdown():
-            ret, frame = self.cap.read()
-            if not ret:
-                rospy.logwarn("Failed to capture frame from camera.")
+            frames = self.pipeline.wait_for_frames()
+            aligned_frames = self.align.process(frames)
+            depth_frame = aligned_frames.get_depth_frame()
+            color_frame = aligned_frames.get_color_frame()
+
+            if not depth_frame or not color_frame:
+                rospy.logwarn("Failed to capture frames from camera.")
                 continue
 
+            frame = np.asanyarray(color_frame.get_data())
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            corners, ids, rejected = aruco.detectMarkers(gray, self.aruco_dict, parameters=self.parameters)
+            corners, ids, rejected = self.detector.detectMarkers(gray)
 
             if ids is not None:
                 rospy.loginfo(f"Detected markers: {ids.flatten()}")
+                marker_in_range = False
                 for i in range(len(ids)):
-                    rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners[i], 0.05, self.camera_matrix, self.dist_coeffs)
-                    distance = np.linalg.norm(tvec)
-                    rospy.loginfo(f"Marker ID: {ids[i]}, Distance: {distance}")
+                    # Get the depth value for the center of the marker
+                    corners_reshaped = corners[i].reshape(-1, 2)
+                    center_x = int(corners_reshaped[:, 0].mean())
+                    center_y = int(corners_reshaped[:, 1].mean())
+                    distance_z = depth_frame.get_distance(center_x, center_y)
 
-                    if 5 <= distance <= 10:
+                    rospy.loginfo(f"Marker ID: {ids[i]}, Distance (z-value): {distance_z}")
+
+                    if 0.0 <= distance_z <= 1.0:
                         rospy.loginfo(f"Marker ID: {ids[i]} within range.")
-                        self.publish_haptic_feedback()
+                        marker_in_range = True
+
+                    if 245 <= ids[i] <= 249:
+                        self.publish_haptic_feedback(marker_in_range, int(ids[i]))
             else:
                 rospy.loginfo("No markers detected.")
 
@@ -49,26 +65,18 @@ class LandmarkDetector:
                 rospy.loginfo("Quitting detection loop.")
                 break
 
-        self.cap.release()
+        self.pipeline.stop()
         cv2.destroyAllWindows()
-    
-    def publish_haptic_feedback(self):
-        rospy.loginfo("Before Publishing HapticRumble message.")
-        msg = HapticRumble()
-        msg.left = True
-        msg.left_volume = 1.0
-        msg.left_delay = 0.5
-        msg.right = True
-        msg.right_volume = 1.0
-        msg.right_delay = 0.5
-        msg.front = True
-        msg.front_volume = 1.0
-        msg.front_delay = 0.5
-        rospy.loginfo("Publishing HapticRumble message.")
+
+    def publish_haptic_feedback(self, in_range, marker_id):
+        rospy.loginfo(f"Publishing to /landmark_in_range: {in_range} for marker ID: {marker_id}")
+        msg = Bool()
+        msg.data = in_range
         self.haptic_pub.publish(msg)
+        rospy.set_param('detected_marker_id', marker_id)
 
 if __name__ == '__main__':
-    rospy.init_node('landmark_detector')
+    rospy.init_node('aruco_detector')
     detector = LandmarkDetector()
     detector.detect_marker()
     rospy.spin()
