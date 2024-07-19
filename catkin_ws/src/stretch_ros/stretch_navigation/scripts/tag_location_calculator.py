@@ -3,6 +3,33 @@
 import rospy
 from tf import TransformListener
 from geometry_msgs.msg import PoseStamped
+import sys
+from select import select
+if sys.platform == 'win32':
+    import msvcrt
+else:
+    import termios
+    import tty
+
+def getKey(settings, timeout):
+    if sys.platform == 'win32':
+        # getwch() returns a string on Windows
+        key = msvcrt.getwch()
+    else:
+        tty.setraw(sys.stdin.fileno())
+        # sys.stdin.read() returns a string on Linux
+        rlist, _, _ = select([sys.stdin], [], [], timeout)
+        if rlist:
+            key = sys.stdin.read(1)
+        else:
+            key = ''
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+    return key
+
+def saveTerminalSettings():
+        if sys.platform == 'win32':
+            return None
+        return termios.tcgetattr(sys.stdin)
 
 def tag_location_calculator():
     rospy.init_node('tag_location_calculator')
@@ -36,6 +63,22 @@ def tag_location_calculator():
 
     # Call publish_tag_location at 1 Hz
     rospy.Timer(rospy.Duration(1), publish_tag_location)
+
+    #Save pose when key '1' is pressed
+    key_timeout = rospy.get_param("~key_timeout", 0.5)
+    settings = saveTerminalSettings()
+    key = getKey(settings, key_timeout)
+    print(key)
+    # if key == '1':
+    #     filename = os.path.join(self.pose_save_dir, str(self.img_counter) + '.pickle')
+    #     trans = self.tfBuffer.lookup_transform('map', 'base_link', rospy.Time())
+    #     x_, y_ = trans.transform.translation.x, trans.transform.translation.y
+    #     x_r, y_r, z_r, w_r = trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w
+    #     # print(x_r, y_r,z_r,w_r)
+    #     with open(filename, 'wb') as f:
+    #         pickle.dump([x_, y_, x_r, y_r, z_r, w_r], f, protocol=pickle.HIGHEST_PROTOCOL)
+    #     self.img_counter = self.img_counter + 1
+
 
     rospy.spin()
 
