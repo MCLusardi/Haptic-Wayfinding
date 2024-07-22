@@ -64,12 +64,14 @@ def tag_location_calculator():
     # Call publish_tag_location at 1 Hz
     rospy.Timer(rospy.Duration(1), publish_tag_location)
 
-    #Save pose when key '1' is pressed
-    key_timeout = rospy.get_param("~key_timeout", 0.5)
+    #Save pose when key '1' is pressed (will only do it once)
+    key_timeout = rospy.get_param("~key_timeout", 6000)
     settings = saveTerminalSettings()
     key = getKey(settings, key_timeout)
+    print("detecting key press")
     print(key)
-    # if key == '1':
+    if key == '1':
+        print("Key 1 pressed")
     #     filename = os.path.join(self.pose_save_dir, str(self.img_counter) + '.pickle')
     #     trans = self.tfBuffer.lookup_transform('map', 'base_link', rospy.Time())
     #     x_, y_ = trans.transform.translation.x, trans.transform.translation.y
