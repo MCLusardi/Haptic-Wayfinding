@@ -7,8 +7,6 @@ import tty
 import termios
 from tf import TransformListener
 from geometry_msgs.msg import PoseStamped
-import json
-import os
 
 def tag_location_calculator():
     rospy.init_node('tag_location_calculator')
@@ -71,15 +69,8 @@ def tag_location_calculator():
 
     settings = termios.tcgetattr(sys.stdin)
 
-    while not rospy.is_shutdown():
-        key = get_key()
-        if key == '1':
-            label = input("Enter label for the current pose: ")
-            save_pose(label)
-        elif key == '2':
-            label = input("Enter label of the pose to delete: ")
-            delete_pose(label)
-        rospy.sleep(0.1)
+    # Call publish_tag_location at 1 Hz
+    rospy.Timer(rospy.Duration(1), publish_tag_location)
 
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
 
