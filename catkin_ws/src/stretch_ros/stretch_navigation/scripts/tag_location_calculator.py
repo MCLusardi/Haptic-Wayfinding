@@ -7,12 +7,14 @@ import tty
 import termios
 from tf import TransformListener
 from geometry_msgs.msg import PoseStamped
+import json
+import os
 
 def tag_location_calculator():
     rospy.init_node('tag_location_calculator')
     listener = TransformListener()
 
-    pose_file = "/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/stretch_ros/stretch_navigation/scripts/pose_file.json"
+    pose_file = "/path/to/pose_file.json"
 
     # Load existing poses from the file
     if os.path.exists(pose_file):
@@ -20,6 +22,28 @@ def tag_location_calculator():
             poses = json.load(f)
     else:
         poses = {}
+
+    def publish_tag_location(event):
+        try:
+            # Get the robot's current pose in the map frame
+            (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+
+            tag_pose = PoseStamped()
+            tag_pose.header.frame_id = "map"
+            tag_pose.header.stamp = rospy.Time.now()
+            tag_pose.pose.position.x = trans[0]
+            tag_pose.pose.position.y = trans[1]
+            tag_pose.pose.position.z = trans[2]
+            tag_pose.pose.orientation.x = rot[0]
+            tag_pose.pose.orientation.y = rot[1]
+            tag_pose.pose.orientation.z = rot[2]
+            tag_pose.pose.orientation.w = rot[3]
+
+            # Publish the tag location
+            tag_location_pub.publish(tag_pose)
+
+        except Exception as e:
+            rospy.logwarn("Failed to get robot pose: %s", str(e))
 
     def save_pose(label):
         try:
@@ -69,8 +93,21 @@ def tag_location_calculator():
 
     settings = termios.tcgetattr(sys.stdin)
 
+    # Publisher for tag location
+    tag_location_pub = rospy.Publisher('/tag_location', PoseStamped, queue_size=10)
+
     # Call publish_tag_location at 1 Hz
     rospy.Timer(rospy.Duration(1), publish_tag_location)
+
+    while not rospy.is_shutdown():
+        key = get_key()
+        if key == '1':
+            label = input("Enter label for the current pose: ")
+            save_pose(label)
+        elif key == '2':
+            label = input("Enter label of the pose to delete: ")
+            delete_pose(label)
+        rospy.sleep(0.1)
 
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
 

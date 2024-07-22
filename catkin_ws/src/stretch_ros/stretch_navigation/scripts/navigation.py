@@ -87,7 +87,7 @@ if __name__ == '__main__':
     rospy.init_node('navigation', argv=sys.argv)
     nav = StretchNavigation()
 
-    pose_file = "/path/to/pose_file.json"
+    pose_file = "/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/stretch_ros/stretch_navigation/scripts/pose_file.json"
 
     # Load the saved poses
     with open(pose_file, 'r') as f:
