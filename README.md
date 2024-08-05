@@ -8,8 +8,8 @@ For any other issues, run `stretch_system_check.py` and see if any errors come u
 
 ## Teleoperation
 to teleoperate robot by sending twist messages from keyboard:
-1. rosservice call /switch_to_navigation_mode
-2. rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=stretch/cmd_vel
+1. `rosservice call /switch_to_navigation_mode`
+2. `rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=stretch/cmd_vel`
 
 ## Building a map
 Save all maps to `/home/hcal-group/stretch_user/maps`
