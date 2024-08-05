@@ -162,7 +162,11 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 # catkin_install_python(PROGRAMS
-#   scripts/my_python_script
+#   scripts/camera_calibration.py
+#   nodes/detect_aruco_marker.py
+#   nodes/check_lidar_distance.py
+#   nodes/haptic_controller.py
+#   nodes/scan_filter.py
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 

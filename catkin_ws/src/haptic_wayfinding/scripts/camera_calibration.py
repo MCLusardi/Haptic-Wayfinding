@@ -18,7 +18,7 @@ objp = np.zeros((CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
 objp[:, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
 
 # Start capturing images for calibration
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
 
 # Number of checkerboard images to capture
 num_calibration_images = 30  # Set your desired number here

@@ -43,24 +43,24 @@
     'name': 'docking_station'
     'link': None
   '246':
-    'length_mm': 179.0
+    'length_mm': 185.0
     'use_rgb_only': False
-    'name': 'floor_0'
+    'name': 'link_west_room'
     'link': None
   '247':
-    'length_mm': 179.0
+    'length_mm': 185.0
     'use_rgb_only': False
-    'name': 'floor_1'
+    'name': 'link_whiteboard_edge'
     'link': None
   '248':
-    'length_mm': 179.0
+    'length_mm': 185.0
     'use_rgb_only': False
-    'name': 'floor_2'
+    'name': 'link_north_room'
     'link': None
   '249':
-    'length_mm': 179.0
+    'length_mm': 185.0
     'use_rgb_only': False
-    'name': 'floor_3'
+    'name': 'link_east_room'
     'link': None
   '10':
     'length_mm': 24

@@ -1,0 +1,8 @@
+<launch>
+  <!-- CALCULATE TAG LOCATION RELATIVE TO MAP -->
+  <node pkg="stretch_navigation" type="tag_location_calculator.py" name="tag_location_calculator" output="screen">
+    <param name="robot_frame" value="/base_link"/>
+    <param name="map_frame" value="/map"/>
+    <remap from="tag_location" to="/tag_location" />
+  </node>
+</launch>
