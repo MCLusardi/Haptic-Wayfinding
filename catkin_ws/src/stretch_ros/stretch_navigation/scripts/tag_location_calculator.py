@@ -1,40 +1,27 @@
 #!/usr/bin/env python
 
 import rospy
+import sys
+import select
+import tty
+import termios
 from tf import TransformListener
 from geometry_msgs.msg import PoseStamped
-import sys
-from select import select
-if sys.platform == 'win32':
-    import msvcrt
-else:
-    import termios
-    import tty
-
-def getKey(settings, timeout):
-    if sys.platform == 'win32':
-        # getwch() returns a string on Windows
-        key = msvcrt.getwch()
-    else:
-        tty.setraw(sys.stdin.fileno())
-        # sys.stdin.read() returns a string on Linux
-        rlist, _, _ = select([sys.stdin], [], [], timeout)
-        if rlist:
-            key = sys.stdin.read(1)
-        else:
-            key = ''
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-    return key
-
-def saveTerminalSettings():
-        if sys.platform == 'win32':
-            return None
-        return termios.tcgetattr(sys.stdin)
+import json
+import os
 
 def tag_location_calculator():
     rospy.init_node('tag_location_calculator')
-
     listener = TransformListener()
+
+    pose_file = "/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/stretch_ros/stretch_navigation/scripts/pose_file.json"
+
+    # Load existing poses from the file
+    if os.path.exists(pose_file):
+        with open(pose_file, 'r') as f:
+            poses = json.load(f)
+    else:
+        poses = {}
 
     def publish_tag_location(event):
         try:
@@ -58,31 +45,71 @@ def tag_location_calculator():
         except Exception as e:
             rospy.logwarn("Failed to get robot pose: %s", str(e))
 
+    def save_pose(label):
+        try:
+            if label in poses:
+                rospy.loginfo("Label already exists. Please choose a different label.")
+                return
+
+            (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+
+            pose = {
+                'position': {
+                    'x': trans[0],
+                    'y': trans[1],
+                    'z': trans[2]
+                },
+                'orientation': {
+                    'x': rot[0],
+                    'y': rot[1],
+                    'z': rot[2],
+                    'w': rot[3]
+                }
+            }
+            poses[label] = pose
+
+            with open(pose_file, 'w') as f:
+                json.dump(poses, f)
+
+            rospy.loginfo("Pose saved with label: {}".format(label))
+        except Exception as e:
+            rospy.logwarn("Failed to get robot pose: {}".format(str(e)))
+
+    def delete_pose(label):
+        if label in poses:
+            del poses[label]
+            with open(pose_file, 'w') as f:
+                json.dump(poses, f)
+            rospy.loginfo("Pose with label '{}' deleted.".format(label))
+        else:
+            rospy.loginfo("Label '{}' not found.".format(label))
+
+    def get_key():
+        tty.setraw(sys.stdin.fileno())
+        select.select([sys.stdin], [], [], 0)
+        key = sys.stdin.read(1)
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        return key
+
+    settings = termios.tcgetattr(sys.stdin)
+
     # Publisher for tag location
     tag_location_pub = rospy.Publisher('/tag_location', PoseStamped, queue_size=10)
 
     # Call publish_tag_location at 1 Hz
     rospy.Timer(rospy.Duration(1), publish_tag_location)
 
-    #Save pose when key '1' is pressed (will only do it once)
-    key_timeout = rospy.get_param("~key_timeout", 6000)
-    settings = saveTerminalSettings()
-    key = getKey(settings, key_timeout)
-    print("detecting key press")
-    print(key)
-    if key == '1':
-        print("Key 1 pressed")
-    #     filename = os.path.join(self.pose_save_dir, str(self.img_counter) + '.pickle')
-    #     trans = self.tfBuffer.lookup_transform('map', 'base_link', rospy.Time())
-    #     x_, y_ = trans.transform.translation.x, trans.transform.translation.y
-    #     x_r, y_r, z_r, w_r = trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z, trans.transform.rotation.w
-    #     # print(x_r, y_r,z_r,w_r)
-    #     with open(filename, 'wb') as f:
-    #         pickle.dump([x_, y_, x_r, y_r, z_r, w_r], f, protocol=pickle.HIGHEST_PROTOCOL)
-    #     self.img_counter = self.img_counter + 1
+    while not rospy.is_shutdown():
+        key = get_key()
+        if key == '1':
+            label = input("Enter label for the current pose: ")
+            save_pose(label)
+        elif key == '2':
+            label = input("Enter label of the pose to delete: ")
+            delete_pose(label)
+        rospy.sleep(0.1)
 
-
-    rospy.spin()
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
 
 if __name__ == '__main__':
     try:
