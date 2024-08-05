@@ -9,6 +9,7 @@ from tf import TransformListener
 from geometry_msgs.msg import PoseStamped
 import json
 import os
+import signal
 
 def tag_location_calculator():
     rospy.init_node('tag_location_calculator')
@@ -90,6 +91,14 @@ def tag_location_calculator():
         key = sys.stdin.read(1)
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
         return key
+
+    def signal_handler(sig, frame):
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        rospy.signal_shutdown("Ctrl+C pressed")
+        sys.exit(0)
+
+    #Set up signal handling for Ctrl+C
+    signal.signal(signal.SIGINT, signal_handler)
 
     settings = termios.tcgetattr(sys.stdin)
 
