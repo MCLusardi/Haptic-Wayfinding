@@ -15,9 +15,14 @@ For any other issues, run `stretch_system_check.py` and see if any errors come u
 Now you're set to run from remote desktop without any cables attached to the robot.
 
 ## Teleoperation
-to teleoperate robot by sending twist messages from keyboard:
+to teleoperate just the robot base from the keyboard:
 1. `rosservice call /switch_to_navigation_mode`
 2. `rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=stretch/cmd_vel`
+
+to teleoperate the base and arm from the keyboard:
+1. `rosservice call /switch_to_position_mode`
+2. `roslaunch stretch_core stretch_driver.launch`
+3. `rosrun stretch_core keyboard_teleop`
 
 ## Building a map
 **NOTE** This requires operating the robot untethered.
@@ -37,9 +42,9 @@ All maps can be found in `/home/hcal-group/stretch_user/maps`
 ## Autonomous Navigation
 To launch a previously saved map in RViz: 
 
-1. Run `roslaunch stretch_navigation navigation.launch map_yaml:=${HELLO_FLEET_PATH}/maps/<map_name>.yaml`
+1. `roslaunch stretch_navigation navigation.launch map_yaml:=${HELLO_FLEET_PATH}/maps/<map_name>.yaml`
 
-   **NOTE** the command above will also launch the stretch_driver.
+   **NOTE** the command above will also launch the stretch_driver *and* rplidar.
    
 2. Set the 2D Pose Estimate to robot's current pose in RViz
 
@@ -47,6 +52,7 @@ To save a pose:
 1. Run `roslaunch stretch_navigation tag_location.launch`
 2. Teleoperate the robot to a pose you want to save
 3. Hit 1 and then enter a label for that pose
+   
    **NOTE** Pose is saved as a quaternion
    
 To get the stream of poses being published to a topic: 
@@ -56,3 +62,26 @@ To get the stream of poses being published to a topic:
 To set a saved pose as a 2D Nav Goal: 
 1. Run `python3 navigation.py` in `stretch_tutorials/src`
 2. Enter the lable of the saved pose you want to navigate to
+
+## Haptic Feedback
+All nodes controlling haptic feedback are in the `haptic_wayfinding` package
+
+To run Haptic Feedback alone:
+1. `roslaunch stretch_core stretch_driver.launch`
+2. `roslaunch stretch_core rplidar.launch`
+   
+   **NOTE** the rplidar node will fail if the haptic motors are plugged in. Only plug in the haptic motors *AFTER* this command is run
+3. `roslaunch haptic_wayfinding rumble.launch`
+
+If you want to check the output of the `/haptic_rumble` topic (which dictates when the motors need to vibrate) run `rostopic echo /haptic_rumble`
+
+To run haptic feedback *with* autonomous navigation:
+1. `roslaunch stretch_navigation navigation.launch map_yaml:=${HELLO_FLEET_PATH}/maps/<map_name>.yaml`
+
+   **NOTE** since this command also launches rplidar, it will also fail if the haptic motors are plugged in. Plug them in *AFTER* this command is run
+2. Set the 2D Pose Estimate to robot's current pose in RViz
+3. `roslaunch haptic_wayfinding rumble.launch`
+4. Run `python3 navigation.py` in `stretch_tutorials/src`
+5. Enter the lable of the saved pose you want to navigate to
+
+Autonomous navigation will work the same, but now the motors will provide vibration feedback as the robot moves.
