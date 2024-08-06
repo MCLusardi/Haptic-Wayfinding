@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import rospy
 # from haptic_wayfinding.msg import FilteredScan, HapticFeedback #Original import with HapticFeedback msg type
 from haptic_wayfinding.msg import FilteredScan, HapticRumble

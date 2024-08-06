@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import rospy
 from std_msgs.msg import Float32, Bool
 import pygame
@@ -33,7 +35,7 @@ class HapticController():
         # print("RUMBLE", msg)
         if msg.left:
             # play sound for left rumble
-            pygame.mixer.music.load('../data/rumble_left.wav')
+            pygame.mixer.music.load('/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_left.wav')
             pygame.mixer.music.play()
             pygame.mixer.music.set_volume(msg.left_volume)
             time.sleep(msg.left_delay * self.sleep_factor)
@@ -42,7 +44,7 @@ class HapticController():
 
         if msg.right:
             # play sound for right rumble
-            pygame.mixer.music.load('../data/rumble_right.wav')
+            pygame.mixer.music.load('/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_right.wav')
             pygame.mixer.music.play()
             pygame.mixer.music.set_volume(msg.right_volume)
             time.sleep(msg.right_delay * self.sleep_factor)
@@ -51,7 +53,7 @@ class HapticController():
             
         if msg.front:
             # play sound for front rumble
-            pygame.mixer.music.load('../data/rumble_both.wav')
+            pygame.mixer.music.load('/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_both.wav')
             pygame.mixer.music.play()
             pygame.mixer.music.set_volume(msg.front_volume)
             time.sleep(msg.front_delay * self.sleep_factor)
@@ -108,15 +110,15 @@ class HapticController():
     def play_rumble(self, marker_id):
         if 245 <= marker_id <= 249:
             if marker_id == 245:
-                sound_file = '../data/rumble_both.wav'
+                sound_file = '/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_both.wav'
             elif marker_id == 246:
-                sound_file = '../data/rumble_left.wav'
+                sound_file = '/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_left.wav'
             elif marker_id == 247:
-                sound_file = '../data/rumble_right.wav'
+                sound_file = '/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_right.wav'
             elif marker_id == 248:
-                sound_file = '../data/rumble_both.wav'
+                sound_file = '/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_both.wav'
             else:
-                sound_file = '../data/rumble_left.wav'  
+                sound_file = '/home/hcal-group/Haptic-Wayfinding/catkin_ws/src/haptic_wayfinding/data/rumble_left.wav'  
 
             pygame.mixer.music.load(sound_file)
             pygame.mixer.music.play()

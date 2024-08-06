@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import rospy
 from numpy import linspace, inf
 from math import sin
